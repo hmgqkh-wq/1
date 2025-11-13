@@ -1,0 +1,34 @@
+name: Build ExynosTools
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake git
+        
+    - name: Create build directory
+      run: mkdir build
+      
+    - name: Configure CMake
+      run: cd build && cmake ..
+      
+    - name: Build
+      run: cd build && make
+      
+    - name: List output files
+      run: |
+        cd build && find . -name "exynostools" -type f
+        ls -la build/
+        
+    - name: Upload binary
+      uses: actions/upload-artifact@v3
+      with:
+        name: exynostools-binary
+        path: build/exynostools
